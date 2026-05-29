@@ -26,11 +26,15 @@ Install from the repo locally while you are working on it:
 go install .
 ```
 
+This uses your local working tree, including uncommitted changes.
+
 Or install it from GitHub:
 
 ```bash
 go install github.com/sergey5d/bark@latest
 ```
+
+This uses the latest version available on GitHub, so if you have changed the repo locally, push first or use `go install .` instead.
 
 Then use it as a normal CLI:
 
@@ -38,6 +42,8 @@ Then use it as a normal CLI:
 bark "*.bark"
 bark import "*.html"
 ```
+
+If you already have an older `bark` binary installed, run `go install .` again after pulling or changing the repo so the command on your `PATH` picks up the latest version.
 
 ## Example
 
