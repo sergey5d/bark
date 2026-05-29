@@ -2,7 +2,9 @@
 
 Bark is a tiny bracket-based markup language for writing HTML with less tag noise.
 It is just another fun attempt to make something more concise than HTML while staying fully compatible with it.
-It is still very rough. I built it for my personal website, and there are probably still bugs or sharp edges. If you run into any, feel free to reach out and I will try to fix them.
+It is still very rough.
+
+I built it for my personal website, and there are probably still bugs or sharp edges. If you run into any, feel free to reach out and I will try to fix them.
 
 It is intentionally small:
 
@@ -249,12 +251,14 @@ Once body parsing has started, only `\[` is treated specially:
 
 ```bark
 [p literal \[ bracket]
+[p example \= result]
 ```
 
 Transcribes to:
 
 ```html
 <p>literal [ bracket</p>
+<p>example \= result</p>
 ```
 
 Quoted attribute values are not affected by these escapes.
