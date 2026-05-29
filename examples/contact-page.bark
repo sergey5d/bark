@@ -10,16 +10,16 @@
   [body
     [header <: site-header data-screen-label=Header
       [<: shell
-        [a <: wordmark href=index.html aria-label=Home
+        [a <: wordmark href=landing-page.html aria-label=Home
           [span <: dot]
           [span Example Person]
         ]
         [nav <: nav aria-label=Primary
-          [a href=index.html | Home]
+          [a href=landing-page.html | Home]
           [a href=work.html | Work]
           [a href=notes.html | Notes]
           [a href=about.html | About]
-          [a <: is-active href=contact.html | Contact]
+          [a <: is-active href=contact-page.html | Contact]
         ]
       ]
     ]
@@ -63,7 +63,7 @@
         [<: links
           [a href=https://example.com/alpha target=_blank rel=noreferrer | alpha]
           [a href=https://example.com/beta target=_blank rel=noreferrer | beta]
-          [a href=index.html | home]
+          [a href=landing-page.html | home]
         ]
       ]
     ]
