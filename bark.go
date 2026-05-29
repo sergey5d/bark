@@ -227,10 +227,34 @@ func ParseBark(input string) (string, error) {
 }
 
 func (n *barkNode) HTML() string {
+	return n.renderHTML(0, false)
+}
+
+func (n *barkNode) renderHTML(indent int, ownLine bool) string {
 	var b strings.Builder
+	indentStr := strings.Repeat("  ", indent)
+	isRawText := barkIsRawTextTag(n.Tag)
+	hasElementChildren := false
+	hasMeaningfulText := false
+	for _, item := range n.Content {
+		if item.Node != nil {
+			hasElementChildren = true
+			continue
+		}
+		if item.Text == "" {
+			continue
+		}
+		if isRawText || strings.TrimSpace(item.Text) != "" {
+			hasMeaningfulText = true
+		}
+	}
+	blockLayout := hasElementChildren
+
+	if ownLine || blockLayout {
+		b.WriteString(indentStr)
+	}
 	b.WriteByte('<')
 	b.WriteString(n.Tag)
-	isRawText := barkIsRawTextTag(n.Tag)
 
 	if len(n.IDs) > 0 {
 		b.WriteString(` id="`)
@@ -260,17 +284,59 @@ func (n *barkNode) HTML() string {
 	}
 
 	b.WriteByte('>')
-	for _, item := range n.Content {
-		if item.Node != nil {
-			b.WriteString(item.Node.HTML())
-		} else {
-			if isRawText {
+
+	if barkVoidTags[strings.ToLower(n.Tag)] {
+		return b.String()
+	}
+
+	if !blockLayout {
+		for _, item := range n.Content {
+			if item.Node != nil {
+				b.WriteString(item.Node.renderHTML(indent+1, false))
+			} else if isRawText {
 				b.WriteString(item.Text)
 			} else {
 				b.WriteString(barkEscapeHTML(item.Text))
 			}
 		}
+		b.WriteString("</")
+		b.WriteString(n.Tag)
+		b.WriteByte('>')
+		return b.String()
 	}
+
+	if hasMeaningfulText {
+		for _, item := range n.Content {
+			if item.Node != nil {
+				continue
+			}
+			text := item.Text
+			if !isRawText {
+				text = strings.TrimSpace(text)
+				if text == "" {
+					continue
+				}
+			}
+			b.WriteByte('\n')
+			b.WriteString(strings.Repeat("  ", indent+1))
+			if isRawText {
+				b.WriteString(text)
+			} else {
+				b.WriteString(barkEscapeHTML(text))
+			}
+		}
+	}
+
+	for _, item := range n.Content {
+		if item.Node == nil {
+			continue
+		}
+		b.WriteByte('\n')
+		b.WriteString(item.Node.renderHTML(indent+1, true))
+	}
+
+	b.WriteByte('\n')
+	b.WriteString(indentStr)
 	b.WriteString("</")
 	b.WriteString(n.Tag)
 	b.WriteByte('>')
