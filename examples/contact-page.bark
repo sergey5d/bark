@@ -1,68 +1,68 @@
 [html lang=en
   [head
     [meta charset=utf-8]
-    [meta name=viewport content="width=device-width, initial-scale=1"]
+    [meta content="width=device-width, initial-scale=1" name=viewport]
     [title Contact — Example Person]
-    [link rel=icon type=image/png href=icon.png]
-    [link rel=stylesheet href=site.css]
+    [link href=icon.png rel=icon type=image/png]
+    [link href=site.css rel=stylesheet]
     [script src=https://unpkg.com/lucide@latest/dist/umd/lucide.min.js]
   ]
   [body
-    [header <: site-header data-screen-label=Header
-      [<: shell
-        [a <: wordmark href=landing-page.html aria-label=Home
-          [span <: dot]
+    [header :site-header data-screen-label=Header
+      [:shell
+        [a :wordmark aria-label=Home href=landing-page.html
+          [span :dot]
           [span Example Person]
         ]
-        [nav <: nav aria-label=Primary
+        [nav :nav aria-label=Primary
           [a href=landing-page.html | Home]
           [a href=work.html | Work]
           [a href=notes.html | Notes]
           [a href=about.html | About]
-          [a <: is-active href=contact-page.html | Contact]
+          [a :is-active href=contact-page.html | Contact]
         ]
       ]
     ]
     [main data-screen-label=Contact
-      [<: shell
-        [<: page-stack
-          [<: page-head
-            [<: eyebrow | // contact]
-            [h1 <: title | Reach out]
-            [p <: lede | Messages from humans, robots, and unusually articulate parrots are all welcome.]
+      [:shell
+        [:page-stack
+          [:page-head
+            [:eyebrow | // contact]
+            [h1 :title | Reach out]
+            [p :lede | Messages from humans, robots, and unusually articulate parrots are all welcome.]
           ]
-          [ul <: contact-list
+          [ul :contact-list
             [li
-              [span <: channel | Email]
-              [span <: value
-                [a <: link href=mailto:hello@example.invalid | hello@example.invalid]
+              [span :channel | Email]
+              [span :value
+                [a :link href=mailto:hello@example.invalid | hello@example.invalid]
               ]
-              [a <: copy-btn href=mailto:hello@example.invalid | open ↗]
+              [a :copy-btn href=mailto:hello@example.invalid | open ↗]
             ]
             [li
-              [span <: channel | Archive]
-              [span <: value
-                [a <: link href=https://example.com/archive target=_blank rel=noreferrer | example.com/archive]
+              [span :channel | Archive]
+              [span :value
+                [a :link href=https://example.com/archive rel=noreferrer target=_blank | example.com/archive]
               ]
-              [a <: copy-btn href=https://example.com/archive target=_blank rel=noreferrer | open ↗]
+              [a :copy-btn href=https://example.com/archive rel=noreferrer target=_blank | open ↗]
             ]
             [li
-              [span <: channel | Orbital relay]
-              [span <: value
-                [a <: link href=https://example.com/relay target=_blank rel=noreferrer | relay://example]
+              [span :channel | Orbital relay]
+              [span :value
+                [a :link href=https://example.com/relay rel=noreferrer target=_blank | relay://example]
               ]
-              [a <: copy-btn href=https://example.com/relay target=_blank rel=noreferrer | open ↗]
+              [a :copy-btn href=https://example.com/relay rel=noreferrer target=_blank | open ↗]
             ]
           ]
         ]
       ]
     ]
-    [footer <: site-footer
-      [<: shell
-        [span <: colophon | © 2026 · fabricated examples for documentation]
-        [<: links
-          [a href=https://example.com/alpha target=_blank rel=noreferrer | alpha]
-          [a href=https://example.com/beta target=_blank rel=noreferrer | beta]
+    [footer :site-footer
+      [:shell
+        [span :colophon | © 2026 · fabricated examples for documentation]
+        [:links
+          [a href=https://example.com/alpha rel=noreferrer target=_blank | alpha]
+          [a href=https://example.com/beta rel=noreferrer target=_blank | beta]
           [a href=landing-page.html | home]
         ]
       ]

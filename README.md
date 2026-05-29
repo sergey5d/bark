@@ -9,7 +9,7 @@ It is intentionally small:
 - tags are written as `[tag ...]`
 - bare `[` means `div`
 - ids use `@id`
-- classes use `<: class1, class2`
+- classes use `:class-name`
 - attributes use `key=value`
 - `|` separates metadata from body text when needed
 
@@ -28,19 +28,19 @@ Bark can go both ways:
     [link rel=stylesheet href=site.css]
   ]
   [body
-    [header <: site-header
-      [<: shell
-        [a <: wordmark href=landing-page.html aria-label=Home
-          [span <: dot]
+    [header :site-header
+      [:shell
+        [a :wordmark href=landing-page.html aria-label=Home
+          [span :dot]
           [span Example Person]
         ]
       ]
     ]
     [main
-      [<: page-stack
-        [<: page-head
-          [h1 <: title | Hello]
-          [p <: lede | This is Bark.]
+      [:page-stack
+        [:page-head
+          [h1 :title | Hello]
+          [p :lede | This is Bark.]
         ]
       ]
     ]
@@ -101,7 +101,7 @@ Transcribes to:
 Unnamed blocks default to `div`:
 
 ```bark
-[<: shell
+[:shell
   [p Inside a div.shell]
 ]
 ```
@@ -144,11 +144,11 @@ Transcribes to:
 
 ### Classes
 
-Use `<:` for classes:
+Use `:class-name` for classes:
 
 ```bark
-[p <: hello-title Hello]
-[<: shell, page-stack]
+[p :hello-title Hello]
+[:shell :page-stack]
 ```
 
 Transcribes to:
@@ -158,7 +158,7 @@ Transcribes to:
 <div class="shell page-stack"></div>
 ```
 
-Classes are comma-separated.
+Repeat `:class-name` for multiple classes.
 
 ### Attributes
 
@@ -195,9 +195,9 @@ Transcribes to:
 Use `|` optionally when a block has ids, classes, or attributes and you want to start body text more clearly:
 
 ```bark
-[h1 <: title | Hello]
+[h1 :title | Hello]
 [a href=contact-page.html | Contact]
-[p @hero <: lede | Intro text]
+[p @hero :lede | Intro text]
 ```
 
 Transcribes to:
@@ -236,14 +236,14 @@ For example:
 
 ```bark
 [p | a=b]
-[p | <: note]
+[p | :note]
 ```
 
 Transcribes to:
 
 ```html
 <p>a=b</p>
-<p><: note</p>
+<p>:note</p>
 ```
 
 Quoted attribute values are not affected by `\[` escaping.

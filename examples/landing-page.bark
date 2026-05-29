@@ -1,21 +1,21 @@
 [html lang=en
   [head
     [meta charset=utf-8]
-    [meta name=viewport content="width=device-width, initial-scale=1"]
+    [meta content="width=device-width, initial-scale=1" name=viewport]
     [title Example Person — example site]
-    [link rel=icon type=image/png href=icon.png]
-    [link rel=stylesheet href=site.css]
+    [link href=icon.png rel=icon type=image/png]
+    [link href=site.css rel=stylesheet]
     [script src=https://unpkg.com/lucide@latest/dist/umd/lucide.min.js]
   ]
   [body
-    [header <: site-header data-screen-label=Header
-      [<: shell
-        [a <: wordmark href=landing-page.html aria-label=Home
-          [span <: dot]
+    [header :site-header data-screen-label=Header
+      [:shell
+        [a :wordmark aria-label=Home href=landing-page.html
+          [span :dot]
           [span Example Person]
         ]
-        [nav <: nav aria-label=Primary
-          [a <: is-active href=landing-page.html | Home]
+        [nav :nav aria-label=Primary
+          [a :is-active href=landing-page.html | Home]
           [a href=work.html | Work]
           [a href=notes.html | Notes]
           [a href=about.html | About]
@@ -24,28 +24,28 @@
       ]
     ]
     [main data-screen-label=Home
-      [<: shell
-        [<: page-stack
-          [<: page-head
-            [<: eyebrow | somewhere · nowhere]
-            [h1 <: title | Taming noise]
-            [p <: lede | Hi. I’m an example person assembled entirely for demo purposes.]
+      [:shell
+        [:page-stack
+          [:page-head
+            [:eyebrow | somewhere · nowhere]
+            [h1 :title | Taming noise]
+            [p :lede | Hi. I’m an example person assembled entirely for demo purposes.]
           ]
-          [<: prose
+          [:prose
             [p I work on imaginary platforms, placeholder pipelines, synthetic dashboards, and the sort of toy systems that exist only to show what the language looks like.]
             [p
-              [a <: link href=about.html | A few made-up details →]
+              [a :link href=about.html | A few made-up details →]
             ]
           ]
         ]
       ]
     ]
-    [footer <: site-footer
-      [<: shell
-        [span <: colophon | © 2026 · built for examples and harmless nonsense]
-        [<: links
-          [a href=https://example.com/alpha target=_blank rel=noreferrer | alpha]
-          [a href=https://example.com/beta target=_blank rel=noreferrer | beta]
+    [footer :site-footer
+      [:shell
+        [span :colophon | © 2026 · built for examples and harmless nonsense]
+        [:links
+          [a href=https://example.com/alpha rel=noreferrer target=_blank | alpha]
+          [a href=https://example.com/beta rel=noreferrer target=_blank | beta]
           [a href=contact-page.html | more →]
         ]
       ]

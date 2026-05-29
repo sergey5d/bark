@@ -248,12 +248,14 @@ func (p *barkParser) parseNode() (*barkNode, error) {
 				return nil, err
 			}
 			n.IDs = append(n.IDs, id)
-		case '<':
-			items, err := p.parseClassList()
+		case ':':
+			item, err := p.parseClassName()
 			if err != nil {
 				return nil, err
 			}
-			n.Classes = items
+			n.Classes = append(n.Classes, item)
+		case '<':
+			return nil, fmt.Errorf("old class syntax `<:` is no longer supported at rune %d; use :class instead", p.pos)
 		default:
 			if p.peek() == '{' {
 				return nil, fmt.Errorf("curly-brace attribute blocks are no longer supported at rune %d", p.pos)
@@ -263,8 +265,11 @@ func (p *barkParser) parseNode() (*barkNode, error) {
 				if err != nil {
 					return nil, err
 				}
+				if _, exists := n.Attrs[key]; exists {
+					return nil, fmt.Errorf("attribute %q is defined more than once at rune %d", key, p.pos)
+				}
 				if key == "class" && len(n.Classes) > 0 {
-					return nil, fmt.Errorf("class cannot be defined both with <: and class= at rune %d", p.pos)
+					return nil, fmt.Errorf("class cannot be defined both with :class and class= at rune %d", p.pos)
 				}
 				if key == "id" && len(n.IDs) > 0 {
 					return nil, fmt.Errorf("id cannot be defined both with @ and id= at rune %d", p.pos)
@@ -323,39 +328,18 @@ body:
 	}
 }
 
-func (p *barkParser) parseClassList() ([]string, error) {
-	if err := p.expect('<'); err != nil {
-		return nil, err
-	}
+func (p *barkParser) parseClassName() (string, error) {
 	if err := p.expect(':'); err != nil {
-		return nil, err
+		return "", err
 	}
-
-	var classes []string
-	p.skipSpaces()
-
-	for !p.eof() {
-		start := p.pos
-		for !p.eof() && barkIsClassNamePart(p.peek()) {
-			p.pos++
-		}
-		if start == p.pos {
-			break
-		}
-		classes = append(classes, string(p.src[start:p.pos]))
-
-		checkpoint := p.pos
-		p.skipSpaces()
-		if !p.eof() && p.peek() == ',' {
-			p.pos++
-			p.skipSpaces()
-			continue
-		}
-		p.pos = checkpoint
-		break
+	start := p.pos
+	for !p.eof() && barkIsClassNamePart(p.peek()) {
+		p.pos++
 	}
-
-	return classes, nil
+	if start == p.pos {
+		return "", fmt.Errorf("expected class name after : at rune %d", p.pos)
+	}
+	return string(p.src[start:p.pos]), nil
 }
 
 func (p *barkParser) looksLikeBareAttr() bool {
@@ -855,12 +839,13 @@ func formatHTMLElementAsBark(elem htmlElementNode, indent int) []string {
 		}
 	}
 	if len(classes) > 0 {
-		if head == "[" {
-			head += "<: "
-		} else {
-			head += " <: "
+		for idx, className := range classes {
+			if head == "[" && idx == 0 {
+				head += ":" + className
+				continue
+			}
+			head += " :" + className
 		}
-		head += strings.Join(classes, ", ")
 	}
 	if len(otherAttrs) > 0 {
 		parts := make([]string, 0, len(otherAttrs))
