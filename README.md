@@ -58,7 +58,22 @@ Transcribes to:
     <link rel="stylesheet" href="site.css">
   </head>
   <body>
-    ...
+    <header class="site-header">
+      <div class="shell">
+        <a class="wordmark" href="landing-page.html" aria-label="Home">
+          <span class="dot"></span>
+          <span>Example Person</span>
+        </a>
+      </div>
+    </header>
+    <main>
+      <div class="page-stack">
+        <div class="page-head">
+          <h1 class="title">Hello</h1>
+          <p class="lede">This is Bark.</p>
+        </div>
+      </div>
+    </main>
   </body>
 </html>
 ```
@@ -209,10 +224,16 @@ Transcribes to:
 
 Escapes are mainly useful while the parser is still in the metadata zone. Any escape sequence there ends metadata parsing and starts body text.
 
+Supported escape sequences are:
+
+- `\[` always means a literal `[`
+- `\<`
+- `\|`
+- `\=`
+
 For example:
 
 ```bark
-[p \<: note]
 [p a\=b]
 [p href=x\?y=z]
 ```
@@ -220,7 +241,6 @@ For example:
 Transcribes to:
 
 ```html
-<p><: note</p>
 <p>a=b</p>
 <p>href=x?y=z</p>
 ```
