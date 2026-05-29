@@ -228,9 +228,9 @@ Transcribes to:
 
 Escaping is intentionally minimal.
 
-Supported escape sequences are:
+The only supported escape sequence is:
 
-- `\[` always means a literal `[`
+- `\[` which means a literal `[`
 
 If you need to use characters that would otherwise look like metadata, end the metadata block first with `|`.
 
@@ -248,21 +248,7 @@ Transcribes to:
 <p><: note</p>
 ```
 
-Once body parsing has started, only `\[` is treated specially:
-
-```bark
-[p literal \[ bracket]
-[p example \= result]
-```
-
-Transcribes to:
-
-```html
-<p>literal [ bracket</p>
-<p>example \= result</p>
-```
-
-Quoted attribute values are not affected by these escapes.
+Quoted attribute values are not affected by `\[` escaping.
 
 ## Commands
 
