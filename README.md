@@ -240,6 +240,7 @@ Here is an example where `|` is not used:
 ```bark
 [span Hello]
 [p This is plain text.]
+[p @hero :lede title=hello Text without separator]
 ```
 
 Transcribes to:
@@ -247,6 +248,7 @@ Transcribes to:
 ```html
 <span>Hello</span>
 <p>This is plain text.</p>
+<p id="hero" class="lede" title="hello">Text without separator</p>
 ```
 
 ### Escaping
