@@ -255,9 +255,10 @@ Transcribes to:
 
 Escaping is intentionally minimal.
 
-The only supported escape sequence is:
+The only supported escape sequences are:
 
 - `\[` which means a literal `[`
+- `\]` which means a literal `]`
 
 If you need to use characters that would otherwise look like metadata, end the metadata block first with `|`.
 
@@ -266,6 +267,7 @@ For example:
 ```bark
 [p | a=b]
 [p | :note]
+[p literal \[ bracket and \] bracket]
 ```
 
 Transcribes to:
@@ -273,9 +275,28 @@ Transcribes to:
 ```html
 <p>a=b</p>
 <p>:note</p>
+<p>literal [ bracket and ] bracket</p>
 ```
 
-Quoted attribute values are not affected by `\[` escaping.
+Quoted attribute values are not affected by `\[` or `\]` escaping.
+
+### Raw text tags
+
+`script` and `style` are treated as raw-text tags.
+
+Inside them, bare `[` and `]` are allowed as normal text as long as they balance before the final closing `]` of the Bark block:
+
+```bark
+[script const xs = [1, 2, 3];]
+[style .note[data-kind="x"] { color: red; }]
+```
+
+Transcribes to:
+
+```html
+<script>const xs = [1, 2, 3];</script>
+<style>.note[data-kind="x"] { color: red; }</style>
+```
 
 ## Commands
 

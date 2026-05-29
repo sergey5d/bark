@@ -230,6 +230,7 @@ func (n *barkNode) HTML() string {
 	var b strings.Builder
 	b.WriteByte('<')
 	b.WriteString(n.Tag)
+	isRawText := barkIsRawTextTag(n.Tag)
 
 	if len(n.Classes) > 0 {
 		b.WriteString(` class="`)
@@ -263,7 +264,11 @@ func (n *barkNode) HTML() string {
 		if item.Node != nil {
 			b.WriteString(item.Node.HTML())
 		} else {
-			b.WriteString(barkEscapeHTML(item.Text))
+			if isRawText {
+				b.WriteString(item.Text)
+			} else {
+				b.WriteString(barkEscapeHTML(item.Text))
+			}
 		}
 	}
 	b.WriteString("</")
@@ -337,6 +342,17 @@ body:
 		}
 	}
 
+	if barkIsRawTextTag(n.Tag) {
+		raw, err := p.parseRawTextBody(n.Tag)
+		if err != nil {
+			return nil, err
+		}
+		if raw != "" {
+			n.Content = append(n.Content, barkContent{Text: raw})
+		}
+		return n, nil
+	}
+
 	var text bytes.Buffer
 	flushText := func() {
 		if text.Len() == 0 {
@@ -351,9 +367,9 @@ body:
 			return nil, fmt.Errorf("unterminated element <%s>", n.Tag)
 		}
 
-		if p.startsEscapedOpenBracket() {
-			p.pos++
-			text.WriteRune(p.next())
+		if escaped, ok := p.escapedBodyRune(); ok {
+			p.pos += 2
+			text.WriteRune(escaped)
 			continue
 		}
 
@@ -448,8 +464,39 @@ func (p *barkParser) parseBareAttr() (string, string, error) {
 	return key, value, nil
 }
 
-func (p *barkParser) startsEscapedOpenBracket() bool {
-	return p.pos+1 < len(p.src) && p.src[p.pos] == '\\' && p.src[p.pos+1] == '['
+func (p *barkParser) parseRawTextBody(tag string) (string, error) {
+	start := p.pos
+	depth := 0
+	for !p.eof() {
+		switch p.peek() {
+		case '[':
+			depth++
+			p.pos++
+		case ']':
+			if depth == 0 {
+				raw := string(p.src[start:p.pos])
+				p.pos++
+				return raw, nil
+			}
+			depth--
+			p.pos++
+		default:
+			p.pos++
+		}
+	}
+	return "", fmt.Errorf("unterminated raw-text element <%s>", tag)
+}
+
+func (p *barkParser) escapedBodyRune() (rune, bool) {
+	if p.pos+1 >= len(p.src) || p.src[p.pos] != '\\' {
+		return 0, false
+	}
+	switch p.src[p.pos+1] {
+	case '[', ']':
+		return p.src[p.pos+1], true
+	default:
+		return 0, false
+	}
 }
 
 func (p *barkParser) parseIDShortcut() (string, error) {
@@ -532,6 +579,15 @@ func barkIsClassNamePart(r rune) bool {
 
 func barkIsAttrNamePart(r rune) bool {
 	return unicode.IsLetter(r) || unicode.IsDigit(r) || r == '-' || r == '_' || r == ':'
+}
+
+func barkIsRawTextTag(tag string) bool {
+	switch strings.ToLower(tag) {
+	case "script", "style":
+		return true
+	default:
+		return false
+	}
 }
 
 func barkEscapeHTML(s string) string {
