@@ -50,27 +50,28 @@ If you already have an older `bark` binary installed, run `go install .` again a
 ```bark
 [html lang=en
   [head
-    [meta charset=utf-8]
     [title Example page]
     [link rel=stylesheet href=site.css]
   ]
   [body
-    [header :site-header
-      [:shell
-        [a :wordmark href=landing-page.html aria-label=Home
+    [header @top :site-header
+      [@frame :shell
+        [a @home-link :wordmark href=landing-page.html aria-label=Home
           [span :dot]
-          [span Example Person]
+          [span Example]
         ]
       ]
     ]
-    [main
-      [:page-stack
-        [:page-head
+    [main @content
+      [@stack :page-stack
+        [@hero :page-head
           [h1 :title | Hello]
           [p :lede | This is Bark.]
         ]
       ]
     ]
+    [style @theme :critical .note[data-kind="x"] { color: red; }]
+    [script @boot :inline type=module console.log([1, 2, 3]);]
   ]
 ]
 ```
@@ -80,27 +81,28 @@ Transcribes to:
 ```html
 <html lang="en">
   <head>
-    <meta charset="utf-8">
     <title>Example page</title>
     <link rel="stylesheet" href="site.css">
   </head>
   <body>
-    <header class="site-header">
-      <div class="shell">
-        <a class="wordmark" href="landing-page.html" aria-label="Home">
+    <header class="site-header" id="top">
+      <div class="shell" id="frame">
+        <a class="wordmark" id="home-link" href="landing-page.html" aria-label="Home">
           <span class="dot"></span>
-          <span>Example Person</span>
+          <span>Example</span>
         </a>
       </div>
     </header>
-    <main>
-      <div class="page-stack">
-        <div class="page-head">
+    <main id="content">
+      <div class="page-stack" id="stack">
+        <div class="page-head" id="hero">
           <h1 class="title">Hello</h1>
           <p class="lede">This is Bark.</p>
         </div>
       </div>
     </main>
+    <style class="critical" id="theme">.note[data-kind="x"] { color: red; }</style>
+    <script class="inline" id="boot" type="module">console.log([1, 2, 3]);</script>
   </body>
 </html>
 ```
