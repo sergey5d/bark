@@ -263,6 +263,12 @@ func (p *barkParser) parseNode() (*barkNode, error) {
 				if err != nil {
 					return nil, err
 				}
+				if key == "class" && len(n.Classes) > 0 {
+					return nil, fmt.Errorf("class cannot be defined both with <: and class= at rune %d", p.pos)
+				}
+				if key == "id" && len(n.IDs) > 0 {
+					return nil, fmt.Errorf("id cannot be defined both with @ and id= at rune %d", p.pos)
+				}
 				n.Attrs[key] = value
 				continue
 			}
