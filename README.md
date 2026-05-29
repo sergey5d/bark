@@ -36,7 +36,7 @@ go install github.com/sergey5d/bark@latest
 
 This uses the latest version available on GitHub, so if you have changed the repo locally, push first or use `go install .` instead.
 
-Then use it as a normal CLI:
+If you installed `bark`, run it directly:
 
 ```bash
 bark "*.bark"
@@ -277,23 +277,30 @@ Quoted attribute values are not affected by `\[` escaping.
 
 ## Commands
 
-Default mode generates HTML from Bark:
+If `bark` is installed, default mode generates HTML from Bark:
 
 ```bash
-go run bark.go "*.bark"
-go run bark.go gen "*.bark"
-go run bark.go -g "*.bark"
+bark "*.bark"
+bark gen "*.bark"
+bark -g "*.bark"
 ```
 
 Import mode converts HTML to Bark:
 
 ```bash
+bark import "*.html"
+bark degen "*.html"
+bark -i "*.html"
+bark -d "*.html"
+```
+
+If you want to run it without installing first:
+
+```bash
+go run bark.go "*.bark"
 go run bark.go import "*.html"
-go run bark.go degen "*.html"
-go run bark.go -i "*.html"
-go run bark.go -d "*.html"
 ```
 
 ## Example files
 
-See [examples/landing-page.bark](/Users/sergeyd/Projects/bark/examples/landing-page.bark) and [examples/contact-page.bark](/Users/sergeyd/Projects/bark/examples/contact-page.bark) for larger examples.
+See [examples/landing-page.bark](examples/landing-page.bark) and [examples/contact-page.bark](/examples/contact-page.bark) for larger examples.
