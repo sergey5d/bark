@@ -258,7 +258,7 @@ func (p *barkParser) parseNode() (*barkNode, error) {
 			if p.peek() == '{' {
 				return nil, fmt.Errorf("curly-brace attribute blocks are no longer supported at rune %d", p.pos)
 			}
-			if p.startsEscapedBodyLiteral() {
+			if p.startsEscapedMetadataBreak() {
 				goto body
 			}
 			if p.looksLikeBareAttr() {
@@ -296,7 +296,7 @@ body:
 			return nil, fmt.Errorf("unterminated element <%s>", n.Tag)
 		}
 
-		if p.startsEscapedBodyLiteral() {
+		if p.startsEscapedOpenBracket() {
 			p.pos++
 			text.WriteRune(p.next())
 			continue
@@ -414,16 +414,12 @@ func (p *barkParser) parseBareAttr() (string, string, error) {
 	return key, value, nil
 }
 
-func (p *barkParser) startsEscapedBodyLiteral() bool {
-	if p.pos+1 >= len(p.src) || p.src[p.pos] != '\\' {
-		return false
-	}
-	switch p.src[p.pos+1] {
-	case '<', '|', '[', '=':
-		return true
-	default:
-		return false
-	}
+func (p *barkParser) startsEscapedMetadataBreak() bool {
+	return p.pos+1 < len(p.src) && p.src[p.pos] == '\\'
+}
+
+func (p *barkParser) startsEscapedOpenBracket() bool {
+	return p.pos+1 < len(p.src) && p.src[p.pos] == '\\' && p.src[p.pos+1] == '['
 }
 
 func (p *barkParser) parseIDShortcut() (string, error) {
