@@ -18,6 +18,27 @@ Bark can go both ways:
 - `bark -> html`
 - `html -> bark`
 
+## Install
+
+Install from the repo locally while you are working on it:
+
+```bash
+go install .
+```
+
+Or install it from GitHub:
+
+```bash
+go install github.com/sergey5d/bark@latest
+```
+
+Then use it as a normal CLI:
+
+```bash
+bark "*.bark"
+bark import "*.html"
+```
+
 ## Example
 
 ```bark
