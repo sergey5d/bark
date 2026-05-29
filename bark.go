@@ -32,28 +32,36 @@ var barkVoidTags = map[string]bool{
 }
 
 func main() {
-	if len(os.Args) != 2 && len(os.Args) != 3 {
-		fmt.Fprintf(os.Stderr, "usage: %s [gen|import|degen|-g|-i|-d] <file-or-pattern>\n", os.Args[0])
+	if len(os.Args) < 2 {
+		barkPrintUsage(os.Stderr, os.Args[0])
 		os.Exit(2)
+	}
+	if len(os.Args) == 2 && (os.Args[1] == "-h" || os.Args[1] == "--help") {
+		barkPrintUsage(os.Stdout, os.Args[0])
+		return
 	}
 
 	mode := "gen"
-	pattern := ""
-	if len(os.Args) == 2 {
-		pattern = os.Args[1]
-	} else {
+	inputs := []string{}
+	if len(os.Args) >= 2 && barkIsModeArg(os.Args[1]) {
+		if len(os.Args) < 3 {
+			barkPrintUsage(os.Stderr, os.Args[0])
+			os.Exit(2)
+		}
 		mode = os.Args[1]
-		pattern = os.Args[2]
+		inputs = os.Args[2:]
+	} else {
+		inputs = os.Args[1:]
 	}
 
 	var err error
 	switch mode {
 	case "gen", "-g":
-		err = barkGenerateHTML(pattern)
+		err = barkGenerateHTML(inputs)
 	case "import", "degen", "-i":
-		err = barkReverseGenerate(pattern)
+		err = barkReverseGenerate(inputs)
 	case "-d":
-		err = barkReverseGenerate(pattern)
+		err = barkReverseGenerate(inputs)
 	default:
 		err = fmt.Errorf("unknown mode %q, expected gen, import, degen, -g, -i, or -d", mode)
 	}
@@ -64,13 +72,54 @@ func main() {
 	}
 }
 
-func barkGenerateHTML(pattern string) error {
-	files, err := filepath.Glob(pattern)
-	if err != nil {
-		return err
+func barkPrintUsage(w *os.File, argv0 string) {
+	fmt.Fprintf(w, "usage: %s [gen|import|degen|-g|-i|-d] <file-or-pattern> [more-files-or-patterns...]\n", argv0)
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Modes:")
+	fmt.Fprintln(w, "  gen, -g      Generate HTML from .bark inputs (default)")
+	fmt.Fprintln(w, "  import       Convert HTML inputs to .bark")
+	fmt.Fprintln(w, "  degen, -i    Alias for import")
+	fmt.Fprintln(w, "  -d           Alias for import")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Examples:")
+	fmt.Fprintf(w, "  %s \"*.bark\"\n", argv0)
+	fmt.Fprintf(w, "  %s *.bark\n", argv0)
+	fmt.Fprintf(w, "  %s import \"*.html\"\n", argv0)
+	fmt.Fprintf(w, "  %s -h\n", argv0)
+}
+
+func barkIsModeArg(arg string) bool {
+	switch arg {
+	case "gen", "import", "degen", "-g", "-i", "-d":
+		return true
+	default:
+		return false
+	}
+}
+
+func barkCollectInputs(inputs []string) ([]string, error) {
+	var files []string
+	for _, input := range inputs {
+		matches, err := filepath.Glob(input)
+		if err != nil {
+			return nil, err
+		}
+		if len(matches) == 0 {
+			files = append(files, input)
+			continue
+		}
+		files = append(files, matches...)
 	}
 	if len(files) == 0 {
-		return fmt.Errorf("pattern %q matched no files", pattern)
+		return nil, fmt.Errorf("no input files matched")
+	}
+	return files, nil
+}
+
+func barkGenerateHTML(inputs []string) error {
+	files, err := barkCollectInputs(inputs)
+	if err != nil {
+		return err
 	}
 
 	for _, src := range files {
@@ -91,13 +140,10 @@ func barkGenerateHTML(pattern string) error {
 	return nil
 }
 
-func barkReverseGenerate(pattern string) error {
-	files, err := filepath.Glob(pattern)
+func barkReverseGenerate(inputs []string) error {
+	files, err := barkCollectInputs(inputs)
 	if err != nil {
 		return err
-	}
-	if len(files) == 0 {
-		return fmt.Errorf("pattern %q matched no files", pattern)
 	}
 
 	for _, src := range files {
