@@ -1,0 +1,72 @@
+[html lang=en
+  [head
+    [meta charset=utf-8]
+    [meta name=viewport content="width=device-width, initial-scale=1"]
+    [title Contact — Example Person]
+    [link rel=icon type=image/png href=icon.png]
+    [link rel=stylesheet href=site.css]
+    [script src=https://unpkg.com/lucide@latest/dist/umd/lucide.min.js]
+  ]
+  [body
+    [header <: site-header data-screen-label=Header
+      [<: shell
+        [a <: wordmark href=index.html aria-label=Home
+          [span <: dot]
+          [span Example Person]
+        ]
+        [nav <: nav aria-label=Primary
+          [a href=index.html | Home]
+          [a href=work.html | Work]
+          [a href=notes.html | Notes]
+          [a href=about.html | About]
+          [a <: is-active href=contact.html | Contact]
+        ]
+      ]
+    ]
+    [main data-screen-label=Contact
+      [<: shell
+        [<: page-stack
+          [<: page-head
+            [<: eyebrow | // contact]
+            [h1 <: title | Reach out]
+            [p <: lede | Messages from humans, robots, and unusually articulate parrots are all welcome.]
+          ]
+          [ul <: contact-list
+            [li
+              [span <: channel | Email]
+              [span <: value
+                [a <: link href=mailto:hello@example.invalid | hello@example.invalid]
+              ]
+              [a <: copy-btn href=mailto:hello@example.invalid | open ↗]
+            ]
+            [li
+              [span <: channel | Archive]
+              [span <: value
+                [a <: link href=https://example.com/archive target=_blank rel=noreferrer | example.com/archive]
+              ]
+              [a <: copy-btn href=https://example.com/archive target=_blank rel=noreferrer | open ↗]
+            ]
+            [li
+              [span <: channel | Orbital relay]
+              [span <: value
+                [a <: link href=https://example.com/relay target=_blank rel=noreferrer | relay://example]
+              ]
+              [a <: copy-btn href=https://example.com/relay target=_blank rel=noreferrer | open ↗]
+            ]
+          ]
+        ]
+      ]
+    ]
+    [footer <: site-footer
+      [<: shell
+        [span <: colophon | © 2026 · fabricated examples for documentation]
+        [<: links
+          [a href=https://example.com/alpha target=_blank rel=noreferrer | alpha]
+          [a href=https://example.com/beta target=_blank rel=noreferrer | beta]
+          [a href=index.html | home]
+        ]
+      ]
+    ]
+    [script lucide.createIcons();]
+  ]
+]

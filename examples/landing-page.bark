@@ -1,0 +1,55 @@
+[html lang=en
+  [head
+    [meta charset=utf-8]
+    [meta name=viewport content="width=device-width, initial-scale=1"]
+    [title Example Person — example site]
+    [link rel=icon type=image/png href=icon.png]
+    [link rel=stylesheet href=site.css]
+    [script src=https://unpkg.com/lucide@latest/dist/umd/lucide.min.js]
+  ]
+  [body
+    [header <: site-header data-screen-label=Header
+      [<: shell
+        [a <: wordmark href=index.html aria-label=Home
+          [span <: dot]
+          [span Example Person]
+        ]
+        [nav <: nav aria-label=Primary
+          [a <: is-active href=index.html | Home]
+          [a href=work.html | Work]
+          [a href=notes.html | Notes]
+          [a href=about.html | About]
+          [a href=contact.html | Contact]
+        ]
+      ]
+    ]
+    [main data-screen-label=Home
+      [<: shell
+        [<: page-stack
+          [<: page-head
+            [<: eyebrow | somewhere · nowhere]
+            [h1 <: title | Taming noise]
+            [p <: lede | Hi. I’m an example person assembled entirely for demo purposes.]
+          ]
+          [<: prose
+            [p I work on imaginary platforms, placeholder pipelines, synthetic dashboards, and the sort of toy systems that exist only to show what the language looks like.]
+            [p
+              [a <: link href=about.html | A few made-up details →]
+            ]
+          ]
+        ]
+      ]
+    ]
+    [footer <: site-footer
+      [<: shell
+        [span <: colophon | © 2026 · built for examples and harmless nonsense]
+        [<: links
+          [a href=https://example.com/alpha target=_blank rel=noreferrer | alpha]
+          [a href=https://example.com/beta target=_blank rel=noreferrer | beta]
+          [a href=contact.html | more →]
+        ]
+      ]
+    ]
+    [script lucide.createIcons();]
+  ]
+]
