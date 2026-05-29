@@ -73,7 +73,8 @@ func main() {
 }
 
 func barkPrintUsage(w *os.File, argv0 string) {
-	fmt.Fprintf(w, "usage: %s [gen|import|degen|-g|-i|-d] <file-or-pattern> [more-files-or-patterns...]\n", argv0)
+	name := filepath.Base(argv0)
+	fmt.Fprintf(w, "usage: %s [gen|import|degen|-g|-i|-d] <file-or-pattern> [more-files-or-patterns...]\n", name)
 	fmt.Fprintln(w)
 	fmt.Fprintln(w, "Modes:")
 	fmt.Fprintln(w, "  gen, -g      Generate HTML from .bark inputs (default)")
@@ -82,10 +83,10 @@ func barkPrintUsage(w *os.File, argv0 string) {
 	fmt.Fprintln(w, "  -d           Alias for import")
 	fmt.Fprintln(w)
 	fmt.Fprintln(w, "Examples:")
-	fmt.Fprintf(w, "  %s \"*.bark\"\n", argv0)
-	fmt.Fprintf(w, "  %s *.bark\n", argv0)
-	fmt.Fprintf(w, "  %s import \"*.html\"\n", argv0)
-	fmt.Fprintf(w, "  %s -h\n", argv0)
+	fmt.Fprintf(w, "  %s \"*.bark\"\n", name)
+	fmt.Fprintf(w, "  %s *.bark\n", name)
+	fmt.Fprintf(w, "  %s import \"*.html\"\n", name)
+	fmt.Fprintf(w, "  %s -h\n", name)
 }
 
 func barkIsModeArg(arg string) bool {
