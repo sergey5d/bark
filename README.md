@@ -2,6 +2,7 @@
 
 Bark is a tiny bracket-based markup language for writing HTML with less tag noise.
 It is just another fun attempt to make something more concise than HTML while staying fully compatible with it.
+It is still very rough. I built it for my personal website, and there are probably still bugs or sharp edges. If you run into any, feel free to reach out and I will try to fix them.
 
 It is intentionally small:
 
@@ -174,7 +175,7 @@ Transcribes to:
 
 ### Body separator
 
-Use `|` when a block has ids, classes, or attributes and you want to start body text clearly:
+Use `|` optionally when a block has ids, classes, or attributes and you want to start body text more clearly:
 
 ```bark
 [h1 <: title | Hello]
@@ -190,7 +191,7 @@ Transcribes to:
 <p id="hero" class="lede">Intro text</p>
 ```
 
-If there is no metadata, plain body text works without `|`:
+Here is an example where `|` is not used:
 
 ```bark
 [span Hello]
