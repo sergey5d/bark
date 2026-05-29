@@ -258,9 +258,6 @@ func (p *barkParser) parseNode() (*barkNode, error) {
 			if p.peek() == '{' {
 				return nil, fmt.Errorf("curly-brace attribute blocks are no longer supported at rune %d", p.pos)
 			}
-			if p.startsEscapedMetadataBreak() {
-				goto body
-			}
 			if p.looksLikeBareAttr() {
 				key, value, err := p.parseBareAttr()
 				if err != nil {
@@ -412,10 +409,6 @@ func (p *barkParser) parseBareAttr() (string, string, error) {
 	}
 
 	return key, value, nil
-}
-
-func (p *barkParser) startsEscapedMetadataBreak() bool {
-	return p.pos+1 < len(p.src) && p.src[p.pos] == '\\'
 }
 
 func (p *barkParser) startsEscapedOpenBracket() bool {

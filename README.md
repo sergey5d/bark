@@ -224,27 +224,26 @@ Transcribes to:
 
 ### Escaping
 
-Escapes are mainly useful while the parser is still in the metadata zone. Any escape sequence there ends metadata parsing and starts body text.
+Escaping is intentionally minimal.
 
 Supported escape sequences are:
 
 - `\[` always means a literal `[`
-- `\<`
-- `\|`
-- `\=`
+
+If you need to use characters that would otherwise look like metadata, end the metadata block first with `|`.
 
 For example:
 
 ```bark
-[p a\=b]
-[p href=x\?y=z]
+[p | a=b]
+[p | <: note]
 ```
 
 Transcribes to:
 
 ```html
 <p>a=b</p>
-<p>href=x?y=z</p>
+<p><: note</p>
 ```
 
 Once body parsing has started, only `\[` is treated specially:
