@@ -169,6 +169,7 @@ Attributes use `key=value`:
 ```bark
 [a href=about.html | About]
 [meta name=viewport content="width=device-width, initial-scale=1"]
+[p attr=value Text]
 ```
 
 Transcribes to:
@@ -176,18 +177,19 @@ Transcribes to:
 ```html
 <a href="about.html">About</a>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<p attr="value">Text</p>
 ```
 
 Quote a value when it contains spaces or special characters:
 
 ```bark
-[meta content="width=device-width, initial-scale=1"]
+[p title="hello world" Hover text]
 ```
 
 Transcribes to:
 
 ```html
-<meta content="width=device-width, initial-scale=1">
+<p title="hello world">Hover text</p>
 ```
 
 ### Body separator
