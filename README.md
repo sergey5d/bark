@@ -79,30 +79,21 @@ If you already have an older `bark` binary installed, run `go install .` again a
 Transcribes to:
 
 ```html
-<html lang="en">
-  <head>
-    <title>Example page</title>
-    <link rel="stylesheet" href="site.css">
+<html lang="en"><head><title>Example page</title>
+    <link href="site.css" rel="stylesheet"></link>
   </head>
-  <body>
-    <header class="site-header" id="top">
-      <div class="shell" id="frame">
-        <a class="wordmark" id="home-link" href="landing-page.html" aria-label="Home">
-          <span class="dot"></span>
+  <body><header id="top" class="site-header"><div id="frame" class="shell"><a id="home-link" class="wordmark" aria-label="Home" href="landing-page.html"><span class="dot"></span>
           <span>Example</span>
         </a>
       </div>
     </header>
-    <main id="content">
-      <div class="page-stack" id="stack">
-        <div class="page-head" id="hero">
-          <h1 class="title">Hello</h1>
+    <main id="content"><div id="stack" class="page-stack"><div id="hero" class="page-head"><h1 class="title">Hello</h1>
           <p class="lede">This is Bark.</p>
         </div>
       </div>
     </main>
-    <style class="critical" id="theme">.note[data-kind="x"] { color: red; }</style>
-    <script class="inline" id="boot" type="module">console.log([1, 2, 3]);</script>
+    <style id="theme" class="critical">.note[data-kind="x"] { color: red; }</style>
+    <script id="boot" class="inline" type="module">console.log([1, 2, 3]);</script>
   </body>
 </html>
 ```

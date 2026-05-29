@@ -232,15 +232,15 @@ func (n *barkNode) HTML() string {
 	b.WriteString(n.Tag)
 	isRawText := barkIsRawTextTag(n.Tag)
 
-	if len(n.Classes) > 0 {
-		b.WriteString(` class="`)
-		b.WriteString(barkEscapeHTML(strings.Join(n.Classes, " ")))
-		b.WriteByte('"')
-	}
-
 	if len(n.IDs) > 0 {
 		b.WriteString(` id="`)
 		b.WriteString(barkEscapeHTML(strings.Join(n.IDs, " ")))
+		b.WriteByte('"')
+	}
+
+	if len(n.Classes) > 0 {
+		b.WriteString(` class="`)
+		b.WriteString(barkEscapeHTML(strings.Join(n.Classes, " ")))
 		b.WriteByte('"')
 	}
 
