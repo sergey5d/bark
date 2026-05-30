@@ -45,6 +45,16 @@ bark import "*.html"
 
 If you already have an older `bark` binary installed, run `go install .` again after pulling or changing the repo so the command on your `PATH` picks up the latest version.
 
+## Editor support
+
+This repo now includes a minimal TextMate-style grammar and VS Code manifest for `.bark` files:
+
+- `package.json`
+- `language-configuration.json`
+- `syntaxes/bark.tmLanguage.json`
+
+To try it locally in VS Code, open the `bark` repo itself as an extension project and run the "Run Extension" launch action.
+
 ## Example
 
 ```bark

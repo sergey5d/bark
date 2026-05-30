@@ -1,0 +1,35 @@
+{
+  "name": "bark-syntax",
+  "displayName": "Bark Syntax",
+  "description": "Syntax highlighting support for the Bark markup language.",
+  "version": "0.0.1",
+  "publisher": "sergey5d",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": ["bark", "markup", "html"],
+  "activationEvents": [
+    "onLanguage:bark"
+  ],
+  "browser": "./noop.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "bark",
+        "aliases": ["Bark", "bark"],
+        "extensions": [".bark"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bark",
+        "scopeName": "source.bark",
+        "path": "./syntaxes/bark.tmLanguage.json"
+      }
+    ]
+  }
+}

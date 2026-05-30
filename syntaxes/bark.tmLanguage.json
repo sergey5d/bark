@@ -1,0 +1,104 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Bark",
+  "scopeName": "source.bark",
+  "patterns": [
+    { "include": "#strings" },
+    { "include": "#escapes" },
+    { "include": "#attributes" },
+    { "include": "#ids" },
+    { "include": "#classes" },
+    { "include": "#separator" },
+    { "include": "#brackets" },
+    { "include": "#tags" }
+  ],
+  "repository": {
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.bark",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.bark",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "escapes": {
+      "patterns": [
+        {
+          "name": "constant.character.escape.bark",
+          "match": "\\\\[\\[\\]]"
+        }
+      ]
+    },
+    "attributes": {
+      "patterns": [
+        {
+          "name": "meta.attribute.bark",
+          "match": "\\b([A-Za-z_:-][A-Za-z0-9_:-]*)(=)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name" },
+            "2": { "name": "keyword.operator.assignment" }
+          }
+        }
+      ]
+    },
+    "ids": {
+      "patterns": [
+        {
+          "name": "meta.id.bark",
+          "match": "(@)([A-Za-z0-9_-]+)",
+          "captures": {
+            "1": { "name": "punctuation.definition.variable" },
+            "2": { "name": "entity.other.attribute-name" }
+          }
+        }
+      ]
+    },
+    "classes": {
+      "patterns": [
+        {
+          "name": "meta.class.bark",
+          "match": "(:)([A-Za-z0-9_-]+)",
+          "captures": {
+            "1": { "name": "punctuation.separator.key-value" },
+            "2": { "name": "entity.other.attribute-name" }
+          }
+        }
+      ]
+    },
+    "separator": {
+      "patterns": [
+        {
+          "name": "keyword.operator",
+          "match": "\\|"
+        }
+      ]
+    },
+    "brackets": {
+      "patterns": [
+        {
+          "name": "punctuation.definition.tag.begin",
+          "match": "\\["
+        },
+        {
+          "name": "punctuation.definition.tag.end",
+          "match": "\\]"
+        }
+      ]
+    },
+    "tags": {
+      "patterns": [
+        {
+          "name": "entity.name.tag",
+          "match": "(?<=\\[)([A-Za-z0-9][A-Za-z0-9_-]*)"
+        }
+      ]
+    }
+  }
+}
