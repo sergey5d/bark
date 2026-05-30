@@ -8,9 +8,9 @@
     [script src=https://unpkg.com/lucide@latest/dist/umd/lucide.min.js]
   ]
   [body
-    [header :site-header data-screen-label=Header
+    [header @top :site-header ~margin=0 data-screen-label=Header
       [:shell
-        [a :wordmark aria-label=Home href=landing-page.html
+        [a @home-link :wordmark aria-label=Home href=landing-page.html
           [span :dot]
           [span Example Person]
         ]
@@ -23,10 +23,10 @@
         ]
       ]
     ]
-    [main data-screen-label=Contact
+    [main @content data-screen-label=Contact
       [:shell
-        [:page-stack
-          [:page-head
+        [@stack :page-stack
+          [@hero :page-head ~margin=0
             [:eyebrow | // contact]
             [h1 :title | Reach out]
             [p :lede | Messages from humans, robots, and unusually articulate parrots are all welcome.]

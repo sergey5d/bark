@@ -11,6 +11,7 @@ It is intentionally small:
 - ids use `@id`
 - classes use `:class-name`
 - attributes use `key=value`
+- inline style declarations use `~property=value`
 - `|` separates metadata from body text when needed
 
 Bark can go both ways:
@@ -228,6 +229,23 @@ Transcribes to:
 ```html
 <p title="hello world">Hover text</p>
 ```
+
+### Inline styles
+
+Inline style declarations use `~property=value` and are merged into a normal `style` attribute:
+
+```bark
+[p @notice :lede ~margin=0 ~padding=8px ~color=red Styled text]
+```
+
+Transcribes to:
+
+```html
+<p id="notice" class="lede" style="margin: 0; padding: 8px; color: red;">Styled text</p>
+```
+
+Plain `style="..."` is still allowed, but you cannot mix it with `~property=value` on the same node.
+As in normal CSS, `0` does not need a unit, but non-zero lengths usually do, for example `8px`.
 
 ### Body separator
 

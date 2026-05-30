@@ -8,9 +8,9 @@
     [script src=https://unpkg.com/lucide@latest/dist/umd/lucide.min.js]
   ]
   [body
-    [header :site-header data-screen-label=Header
+    [header @top :site-header ~margin=0 data-screen-label=Header
       [:shell
-        [a :wordmark aria-label=Home href=landing-page.html
+        [a @home-link :wordmark aria-label=Home href=landing-page.html
           [span :dot]
           [span Example Person]
         ]
@@ -23,10 +23,10 @@
         ]
       ]
     ]
-    [main data-screen-label=Home
+    [main @content data-screen-label=Home
       [:shell
-        [:page-stack
-          [:page-head
+        [@stack :page-stack
+          [@hero :page-head ~margin=0
             [:eyebrow | somewhere · nowhere]
             [h1 :title | Taming noise]
             [p :lede | Hi. I’m an example person assembled entirely for demo purposes.]

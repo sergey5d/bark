@@ -1,14 +1,21 @@
-<html lang="en"><head><meta charset="utf-8"></meta>
-    <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>Example Person — example site</title>
-    <link href="icon.png" rel="icon" type="image/png"></link>
-    <link href="site.css" rel="stylesheet"></link>
+    <link href="icon.png" rel="icon" type="image/png">
+    <link href="site.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   </head>
-  <body><header class="site-header" data-screen-label="Header"><div class="shell"><a class="wordmark" aria-label="Home" href="landing-page.html"><span class="dot"></span>
+  <body>
+    <header id="top" class="site-header" style="margin: 0;" data-screen-label="Header">
+      <div class="shell">
+        <a id="home-link" class="wordmark" aria-label="Home" href="landing-page.html">
+          <span class="dot"></span>
           <span>Example Person</span>
         </a>
-        <nav class="nav" aria-label="Primary"><a class="is-active" href="landing-page.html">Home</a>
+        <nav class="nav" aria-label="Primary">
+          <a class="is-active" href="landing-page.html">Home</a>
           <a href="work.html">Work</a>
           <a href="notes.html">Notes</a>
           <a href="about.html">About</a>
@@ -16,19 +23,28 @@
         </nav>
       </div>
     </header>
-    <main data-screen-label="Home"><div class="shell"><div class="page-stack"><div class="page-head"><div class="eyebrow">somewhere · nowhere</div>
+    <main id="content" data-screen-label="Home">
+      <div class="shell">
+        <div id="stack" class="page-stack">
+          <div id="hero" class="page-head" style="margin: 0;">
+            <div class="eyebrow">somewhere · nowhere</div>
             <h1 class="title">Taming noise</h1>
             <p class="lede">Hi. I’m an example person assembled entirely for demo purposes.</p>
           </div>
-          <div class="prose"><p>I work on imaginary platforms, placeholder pipelines, synthetic dashboards, and the sort of toy systems that exist only to show what the language looks like.</p>
-            <p><a class="link" href="about.html">A few made-up details →</a>
+          <div class="prose">
+            <p>I work on imaginary platforms, placeholder pipelines, synthetic dashboards, and the sort of toy systems that exist only to show what the language looks like.</p>
+            <p>
+              <a class="link" href="about.html">A few made-up details →</a>
             </p>
           </div>
         </div>
       </div>
     </main>
-    <footer class="site-footer"><div class="shell"><span class="colophon">© 2026 · built for examples and harmless nonsense</span>
-        <div class="links"><a href="https://example.com/alpha" rel="noreferrer" target="_blank">alpha</a>
+    <footer class="site-footer">
+      <div class="shell">
+        <span class="colophon">© 2026 · built for examples and harmless nonsense</span>
+        <div class="links">
+          <a href="https://example.com/alpha" rel="noreferrer" target="_blank">alpha</a>
           <a href="https://example.com/beta" rel="noreferrer" target="_blank">beta</a>
           <a href="contact-page.html">more →</a>
         </div>

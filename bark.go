@@ -173,11 +173,12 @@ type barkParser struct {
 }
 
 type barkNode struct {
-	Tag     string
-	Classes []string
-	IDs     []string
-	Attrs   map[string]string
-	Content []barkContent
+	Tag        string
+	Classes    []string
+	IDs        []string
+	Attrs      map[string]string
+	StyleDecls [][2]string
+	Content    []barkContent
 }
 
 type barkContent struct {
@@ -265,6 +266,16 @@ func (n *barkNode) renderHTML(indent int, ownLine bool) string {
 	if len(n.Classes) > 0 {
 		b.WriteString(` class="`)
 		b.WriteString(barkEscapeHTML(strings.Join(n.Classes, " ")))
+		b.WriteByte('"')
+	}
+
+	if len(n.StyleDecls) > 0 {
+		parts := make([]string, 0, len(n.StyleDecls))
+		for _, decl := range n.StyleDecls {
+			parts = append(parts, decl[0]+": "+decl[1]+";")
+		}
+		b.WriteString(` style="`)
+		b.WriteString(barkEscapeHTML(strings.Join(parts, " ")))
 		b.WriteByte('"')
 	}
 
@@ -372,6 +383,20 @@ func (p *barkParser) parseNode() (*barkNode, error) {
 				return nil, err
 			}
 			n.Classes = append(n.Classes, item)
+		case '~':
+			key, value, err := p.parseStyleDecl()
+			if err != nil {
+				return nil, err
+			}
+			if _, exists := n.Attrs["style"]; exists {
+				return nil, fmt.Errorf("style cannot be defined both with ~property and style= at rune %d", p.pos)
+			}
+			for _, decl := range n.StyleDecls {
+				if decl[0] == key {
+					return nil, fmt.Errorf("style property %q is defined more than once at rune %d", key, p.pos)
+				}
+			}
+			n.StyleDecls = append(n.StyleDecls, [2]string{key, value})
 		case '<':
 			return nil, fmt.Errorf("old class syntax `<:` is no longer supported at rune %d; use :class instead", p.pos)
 		default:
@@ -391,6 +416,9 @@ func (p *barkParser) parseNode() (*barkNode, error) {
 				}
 				if key == "id" && len(n.IDs) > 0 {
 					return nil, fmt.Errorf("id cannot be defined both with @ and id= at rune %d", p.pos)
+				}
+				if key == "style" && len(n.StyleDecls) > 0 {
+					return nil, fmt.Errorf("style cannot be defined both with style= and ~property at rune %d", p.pos)
 				}
 				n.Attrs[key] = value
 				continue
@@ -530,6 +558,54 @@ func (p *barkParser) parseBareAttr() (string, string, error) {
 	return key, value, nil
 }
 
+func (p *barkParser) parseStyleDecl() (string, string, error) {
+	if err := p.expect('~'); err != nil {
+		return "", "", err
+	}
+	start := p.pos
+	for !p.eof() && barkIsStyleNamePart(p.peek()) {
+		p.pos++
+	}
+	if start == p.pos {
+		return "", "", fmt.Errorf("expected style property after ~ at rune %d", p.pos)
+	}
+	key := string(p.src[start:p.pos])
+
+	if err := p.expect('='); err != nil {
+		return "", "", err
+	}
+	if p.eof() {
+		return "", "", fmt.Errorf("expected style value for %q at rune %d", key, p.pos)
+	}
+
+	var value string
+	switch p.peek() {
+	case '"', '\'':
+		quote := p.next()
+		start = p.pos
+		for !p.eof() && p.peek() != quote {
+			p.pos++
+		}
+		if p.eof() {
+			return "", "", fmt.Errorf("unterminated quoted value for style %q", key)
+		}
+		value = string(p.src[start:p.pos])
+		p.pos++
+	default:
+		start = p.pos
+		for !p.eof() {
+			r := p.peek()
+			if unicode.IsSpace(r) || r == '|' || r == '[' || r == ']' {
+				break
+			}
+			p.pos++
+		}
+		value = string(p.src[start:p.pos])
+	}
+
+	return key, value, nil
+}
+
 func (p *barkParser) parseRawTextBody(tag string) (string, error) {
 	start := p.pos
 	depth := 0
@@ -645,6 +721,10 @@ func barkIsClassNamePart(r rune) bool {
 
 func barkIsAttrNamePart(r rune) bool {
 	return unicode.IsLetter(r) || unicode.IsDigit(r) || r == '-' || r == '_' || r == ':'
+}
+
+func barkIsStyleNamePart(r rune) bool {
+	return unicode.IsLetter(r) || unicode.IsDigit(r) || r == '-' || r == '_'
 }
 
 func barkIsRawTextTag(tag string) bool {
