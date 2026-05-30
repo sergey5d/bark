@@ -75,7 +75,7 @@ To try it locally in VS Code, open the `bark` repo itself as an extension projec
     ]
     [main @content
       [@stack :page-stack
-        [@hero :page-head
+        [@hero :page-head ~margin=0
           [h1 :title | Hello]
           [p :lede | This is Bark.]
         ]
@@ -106,7 +106,7 @@ Transcribes to:
     </header>
     <main id="content">
       <div id="stack" class="page-stack">
-        <div id="hero" class="page-head">
+        <div id="hero" class="page-head" style="margin: 0;">
           <h1 class="title">Hello</h1>
           <p class="lede">This is Bark.</p>
         </div>
