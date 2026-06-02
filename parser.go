@@ -27,25 +27,43 @@ type barkContent struct {
 	Node *barkNode
 }
 
-func ParseBark(input string) (string, error) {
+func parseBarkDocument(input string) ([]barkContent, error) {
 	p := &barkParser{src: []rune(input)}
-	var nodes []*barkNode
-	var textParts []string
+	var items []barkContent
 
 	for !p.eof() {
 		if p.peek() == '[' {
 			n, err := p.parseNode()
 			if err != nil {
-				return "", err
+				return nil, err
 			}
-			nodes = append(nodes, n)
+			items = append(items, barkContent{Node: n})
 			continue
 		}
 
 		text := p.readUntil('[')
 		if strings.TrimSpace(text) != "" {
-			textParts = append(textParts, text)
+			items = append(items, barkContent{Text: text})
 		}
+	}
+
+	return items, nil
+}
+
+func ParseBark(input string) (string, error) {
+	items, err := parseBarkDocument(input)
+	if err != nil {
+		return "", err
+	}
+
+	var nodes []*barkNode
+	var textParts []string
+	for _, item := range items {
+		if item.Node != nil {
+			nodes = append(nodes, item.Node)
+			continue
+		}
+		textParts = append(textParts, item.Text)
 	}
 
 	var out strings.Builder
@@ -66,6 +84,27 @@ func ParseBark(input string) (string, error) {
 	}
 
 	return out.String(), nil
+}
+
+func FormatBark(input string) (string, error) {
+	items, err := parseBarkDocument(input)
+	if err != nil {
+		return "", err
+	}
+
+	var lines []string
+	for _, item := range items {
+		if item.Node != nil {
+			lines = append(lines, item.Node.barkLines(0)...)
+			continue
+		}
+		lines = append(lines, barkFormatTopLevelText(item.Text)...)
+	}
+
+	if len(lines) == 0 {
+		return "", nil
+	}
+	return strings.Join(lines, "\n") + "\n", nil
 }
 
 func (n *barkNode) HTML() string {
@@ -597,4 +636,148 @@ func barkEscapeHTML(s string) string {
 		}
 	}
 	return b.String()
+}
+
+func barkFormatTopLevelText(text string) []string {
+	trimmed := strings.TrimSpace(text)
+	if trimmed == "" {
+		return nil
+	}
+	return []string{trimmed}
+}
+
+func barkFormatAttrValue(value string) string {
+	if value != "" && barkAttrValueRE.MatchString(value) {
+		return value
+	}
+	return `"` + strings.ReplaceAll(value, `"`, `\"`) + `"`
+}
+
+func barkEscapeBodyText(text string) string {
+	text = strings.ReplaceAll(text, `\`, `\\`)
+	text = strings.ReplaceAll(text, `[`, `\[`)
+	text = strings.ReplaceAll(text, `]`, `\]`)
+	return text
+}
+
+func (n *barkNode) barkHead() string {
+	head := "["
+	if n.Tag != "" && n.Tag != "div" {
+		head += n.Tag
+	}
+
+	for _, id := range n.IDs {
+		if head == "[" {
+			if barkFormatSpacedDiv {
+				head += " @" + id
+			} else {
+				head += "@" + id
+			}
+		} else {
+			head += " @" + id
+		}
+	}
+	for _, className := range n.Classes {
+		if head == "[" {
+			if barkFormatSpacedDiv {
+				head += " :" + className
+			} else {
+				head += ":" + className
+			}
+		} else {
+			head += " :" + className
+		}
+	}
+	for _, decl := range n.StyleDecls {
+		if head == "[" {
+			if barkFormatSpacedDiv {
+				head += " "
+			}
+		} else {
+			head += " "
+		}
+		head += "~" + decl[0] + "=" + barkFormatAttrValue(decl[1])
+	}
+
+	if len(n.Attrs) > 0 {
+		keys := make([]string, 0, len(n.Attrs))
+		for k := range n.Attrs {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, k := range keys {
+			if head == "[" {
+				if barkFormatSpacedDiv {
+					head += " "
+				}
+			} else {
+				head += " "
+			}
+			head += k + "=" + barkFormatAttrValue(n.Attrs[k])
+		}
+	}
+
+	return head
+}
+
+func (n *barkNode) barkHasMetadata() bool {
+	return len(n.IDs) > 0 || len(n.Classes) > 0 || len(n.StyleDecls) > 0 || len(n.Attrs) > 0
+}
+
+func (n *barkNode) barkLines(indent int) []string {
+	indentStr := strings.Repeat(" ", indent)
+	head := n.barkHead()
+	isRawText := barkIsRawTextTag(n.Tag)
+
+	if len(n.Content) == 0 {
+		return []string{indentStr + head + "]"}
+	}
+
+	onlyText := true
+	var textParts []string
+	for _, item := range n.Content {
+		if item.Node != nil {
+			onlyText = false
+			break
+		}
+		textParts = append(textParts, item.Text)
+	}
+
+	if onlyText {
+		body := strings.Join(textParts, "")
+		if isRawText {
+			return []string{indentStr + head + " " + body + "]"}
+		}
+		body = strings.TrimSpace(body)
+		if body == "" {
+			return []string{indentStr + head + "]"}
+		}
+		body = barkEscapeBodyText(body)
+		if n.barkHasMetadata() {
+			return []string{indentStr + head + " | " + body + "]"}
+		}
+		if head == "[" {
+			return []string{indentStr + head + body + "]"}
+		}
+		return []string{indentStr + head + " " + body + "]"}
+	}
+
+	lines := []string{indentStr + head}
+	for _, item := range n.Content {
+		if item.Node != nil {
+			lines = append(lines, item.Node.barkLines(indent+2)...)
+			continue
+		}
+		text := strings.TrimSpace(item.Text)
+		if text == "" {
+			continue
+		}
+		if isRawText {
+			lines = append(lines, strings.Repeat(" ", indent+2)+item.Text)
+		} else {
+			lines = append(lines, strings.Repeat(" ", indent+2)+barkEscapeBodyText(text))
+		}
+	}
+	lines = append(lines, indentStr+"]")
+	return lines
 }

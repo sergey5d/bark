@@ -328,7 +328,11 @@ func formatHTMLElementAsBark(elem htmlElementNode, indent int) []string {
 	}
 	if len(ids) > 0 {
 		if head == "[" {
-			head += " @" + ids[0]
+			if barkFormatSpacedDiv {
+				head += " @" + ids[0]
+			} else {
+				head += "@" + ids[0]
+			}
 			ids = ids[1:]
 		}
 		for _, id := range ids {
@@ -338,7 +342,11 @@ func formatHTMLElementAsBark(elem htmlElementNode, indent int) []string {
 	if len(classes) > 0 {
 		for idx, className := range classes {
 			if head == "[" && idx == 0 {
-				head += " :" + className
+				if barkFormatSpacedDiv {
+					head += " :" + className
+				} else {
+					head += ":" + className
+				}
 				continue
 			}
 			head += " :" + className
@@ -350,7 +358,11 @@ func formatHTMLElementAsBark(elem htmlElementNode, indent int) []string {
 			parts = append(parts, attr[0]+"="+formatBarkAttrValue(attr[1]))
 		}
 		if head == "[" {
-			head += " " + strings.Join(parts, " ")
+			if barkFormatSpacedDiv {
+				head += " " + strings.Join(parts, " ")
+			} else {
+				head += strings.Join(parts, " ")
+			}
 		} else {
 			head += " " + strings.Join(parts, " ")
 		}

@@ -6,6 +6,7 @@ import (
 
 var barkWhitespaceRE = regexp.MustCompile(`\s+`)
 var barkAttrValueRE = regexp.MustCompile(`^[^=\s\[\]"]+$`)
+var barkFormatSpacedDiv bool
 
 var barkVoidTags = map[string]bool{
 	"area":   true,
