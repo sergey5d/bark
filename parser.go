@@ -280,9 +280,6 @@ func (p *barkParser) parseNode() (*barkNode, error) {
 		case '<':
 			return nil, fmt.Errorf("old class syntax `<:` is no longer supported at rune %d; use :class instead", p.pos)
 		default:
-			if p.peek() == '{' {
-				return nil, fmt.Errorf("curly-brace attribute blocks are no longer supported at rune %d", p.pos)
-			}
 			if p.looksLikeBareAttr() {
 				key, value, err := p.parseBareAttr()
 				if err != nil {
