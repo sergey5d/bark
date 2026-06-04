@@ -18,7 +18,7 @@ export default function Page({ onSave, title }) {
 }
 ```
 
-The Vite plugin rewrites `.barkx` files into JSX before the normal React plugin runs.
+The Vite plugin rewrites `.barkx` files into JSX and immediately lowers that JSX to normal JavaScript before Vite import analysis runs.
 
 ## Usage
 

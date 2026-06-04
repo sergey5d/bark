@@ -1,3 +1,7 @@
+import { readFile } from "node:fs/promises";
+
+import { transformWithEsbuild } from "vite";
+
 import { transformBarkx } from "./transform.js";
 
 function stripQuery(id) {
@@ -9,15 +13,21 @@ export function barkx() {
   return {
     name: "barkx",
     enforce: "pre",
-    transform(source, id) {
-      if (!stripQuery(id).endsWith(".barkx")) {
+    async load(id) {
+      const cleanID = stripQuery(id);
+      if (!cleanID.endsWith(".barkx")) {
         return null;
       }
 
-      return {
-        code: transformBarkx(source, id),
-        map: null,
-      };
+      const source = await readFile(cleanID, "utf8");
+      const jsx = transformBarkx(source, cleanID);
+
+      return transformWithEsbuild(jsx, cleanID, {
+        loader: "jsx",
+        jsx: "automatic",
+        sourcemap: true,
+        target: "esnext",
+      });
     },
   };
 }

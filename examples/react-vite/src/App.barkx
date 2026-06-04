@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import BarkButton from "./BarkButton.barkx";
 import CounterButton from "./CounterButton.jsx";
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
     ]
     [section :actions
       [CounterButton :primary count={count} onIncrement={() => setCount((value) => value + 1)}]
+      [BarkButton :secondary count={count} onReset={() => setCount(0)}]
       [ :status-card
         [p :meta Total clicks]
         [p :count {count}]
