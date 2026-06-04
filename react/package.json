@@ -1,0 +1,14 @@
+{
+  "name": "@sergey5d/bark-react",
+  "version": "0.0.1",
+  "description": "React/Vite support for Barkx square-bracket markup.",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./transform": "./transform.js",
+    "./barkx.d.ts": "./barkx.d.ts"
+  },
+  "peerDependencies": {
+    "vite": "^7.0.0"
+  }
+}

@@ -1,0 +1,24 @@
+import { useState } from "react";
+
+import CounterButton from "./CounterButton.jsx";
+
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  return #[main @app :app-shell
+    [section :hero
+      [p :eyebrow Barkx]
+      [h1 Bark tags inside a React module]
+      [p :lede
+        Use #\[ ... \] to enter Bark, keep @ids and :classes, and let bare \[ default to div.
+      ]
+    ]
+    [section :actions
+      [CounterButton :primary count={count} onIncrement={() => setCount((value) => value + 1)}]
+      [ :status-card
+        [p :meta Total clicks]
+        [p :count {count}]
+      ]
+    ]
+  ];
+}

@@ -1,0 +1,106 @@
+:root {
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: #14213d;
+  background:
+    radial-gradient(circle at top, rgba(244, 162, 97, 0.24), transparent 38%),
+    linear-gradient(180deg, #f8f3e8 0%, #f7ede2 55%, #fffaf2 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  gap: 2rem;
+  align-content: center;
+  padding: 4rem 1.5rem;
+}
+
+.hero,
+.actions,
+.status-card {
+  width: min(100%, 52rem);
+  margin: 0 auto;
+}
+
+.hero,
+.actions {
+  display: grid;
+  gap: 1rem;
+}
+
+.eyebrow,
+.meta {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+  color: #b05f2c;
+}
+
+.hero h1,
+.lede,
+.count {
+  margin: 0;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 0.96;
+}
+
+.lede {
+  max-width: 38rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.actions {
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  align-items: start;
+}
+
+.counter-button,
+.status-card {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 1.1rem 2.5rem rgba(20, 33, 61, 0.08);
+}
+
+.counter-button {
+  padding: 1rem 1.2rem;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #14213d;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.counter-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 1.4rem 2.8rem rgba(20, 33, 61, 0.12);
+}
+
+.status-card {
+  padding: 1.2rem 1.4rem;
+}
+
+.count {
+  font-size: 3rem;
+  font-weight: 700;
+}
