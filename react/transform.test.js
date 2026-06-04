@@ -58,3 +58,25 @@ test("rewrites inline Bark style declarations into a React style prop", () => {
 
   assert.match(output, /style=\{\{ backgroundColor: "red", padding: spacing \}\}/);
 });
+
+test("supports dynamic class sugar with :{expr}", () => {
+  const source = `export default function Button({ classes }) {
+  return #[button :primary :{classes} Click];
+}
+`;
+
+  const output = transformBarkx(source, "DynamicClass.barkx");
+
+  assert.match(output, /className=\{\["primary", classes\]\.filter\(Boolean\)\.join\(" "\)\}/);
+});
+
+test("supports dynamic id sugar with @{expr}", () => {
+  const source = `export default function Section({ sectionId }) {
+  return #[section @{sectionId} Hello];
+}
+`;
+
+  const output = transformBarkx(source, "DynamicID.barkx");
+
+  assert.match(output, /<section id=\{sectionId\}>/);
+});

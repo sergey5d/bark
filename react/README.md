@@ -41,7 +41,9 @@ export default defineConfig({
 - Nested Bark tags continue to use `[tag ...]`.
 - Bare `[` defaults to `div`.
 - `:class-name` compiles to `className`.
+- `:{expr}` appends dynamic class names into `className`.
 - `@id` compiles to `id`.
+- `@{expr}` compiles to a dynamic `id`.
 - `key=value` and `key={expr}` compile to JSX props.
 - `{expr}` inside Bark compiles to JSX child expressions.
 

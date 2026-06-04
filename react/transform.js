@@ -49,6 +49,7 @@ class BarkxParser {
       tag: "div",
       id: null,
       classes: [],
+      classExprs: [],
       attrs: [],
       styles: [],
       children: [],
@@ -66,10 +67,10 @@ class BarkxParser {
           if (node.id !== null) {
             this.error("multiple @id entries are not allowed in barkx");
           }
-          node.id = this.parseID();
+          node.id = this.parseIDValue();
           continue;
         case ":":
-          node.classes.push(this.parseClassName());
+          this.parseClassValue(node);
           continue;
         case "~":
           node.styles.push(this.parseStyleDecl());
@@ -81,7 +82,7 @@ class BarkxParser {
               this.error("id cannot be defined with both @id and id=");
             }
             if (attr.name === "class" || attr.name === "className") {
-              if (node.classes.length > 0) {
+              if (node.classes.length > 0 || node.classExprs.length > 0) {
                 this.error("className cannot be defined with both :class and className=");
               }
             }
@@ -144,8 +145,15 @@ class BarkxParser {
     this.error(`unterminated barkx node <${node.tag}>`);
   }
 
-  parseID() {
+  parseIDValue() {
     this.expect("@");
+    if (this.peek() === "{") {
+      return {
+        kind: "expr",
+        code: this.parseExpression(),
+      };
+    }
+
     const start = this.pos;
     while (!this.eof() && isShortcutNamePart(this.peek())) {
       this.pos++;
@@ -153,11 +161,19 @@ class BarkxParser {
     if (start === this.pos) {
       this.error("expected an id after @");
     }
-    return this.source.slice(start, this.pos);
+    return {
+      kind: "string",
+      value: this.source.slice(start, this.pos),
+    };
   }
 
-  parseClassName() {
+  parseClassValue(node) {
     this.expect(":");
+    if (this.peek() === "{") {
+      node.classExprs.push(this.parseExpression());
+      return;
+    }
+
     const start = this.pos;
     while (!this.eof() && isShortcutNamePart(this.peek())) {
       this.pos++;
@@ -165,7 +181,7 @@ class BarkxParser {
     if (start === this.pos) {
       this.error("expected a class name after :");
     }
-    return this.source.slice(start, this.pos);
+    node.classes.push(this.source.slice(start, this.pos));
   }
 
   parseStyleDecl() {
@@ -342,10 +358,10 @@ function renderNode(node) {
   const props = [];
 
   if (node.id !== null) {
-    props.push(`id=${renderPropValue({ kind: "string", value: node.id })}`);
+    props.push(`id=${renderPropValue(node.id)}`);
   }
-  if (node.classes.length > 0) {
-    props.push(`className=${renderPropValue({ kind: "string", value: node.classes.join(" ") })}`);
+  if (node.classes.length > 0 || node.classExprs.length > 0) {
+    props.push(`className=${renderClassNameProp(node.classes, node.classExprs)}`);
   }
   if (node.styles.length > 0) {
     props.push(renderStyleProp(node.styles));
@@ -390,6 +406,22 @@ function renderStyleProp(styles) {
   });
 
   return `style={{ ${entries.join(", ")} }}`;
+}
+
+function renderClassNameProp(staticClasses, dynamicClasses) {
+  if (dynamicClasses.length === 0) {
+    return renderPropValue({ kind: "string", value: staticClasses.join(" ") });
+  }
+
+  const entries = [];
+  if (staticClasses.length > 0) {
+    entries.push(JSON.stringify(staticClasses.join(" ")));
+  }
+  for (const expr of dynamicClasses) {
+    entries.push(expr);
+  }
+
+  return `{[${entries.join(", ")}].filter(Boolean).join(" ")}`;
 }
 
 function renderStyleKey(name) {
