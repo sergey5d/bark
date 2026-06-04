@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 import { transformWithEsbuild } from "vite";
 
-import { transformBarkx } from "./transform.js";
+import { compileBarkx } from "./transform.js";
 
 function stripQuery(id) {
   const queryIndex = id.indexOf("?");
@@ -20,7 +20,7 @@ export function barkx() {
       }
 
       const source = await readFile(cleanID, "utf8");
-      const jsx = transformBarkx(source, cleanID);
+      const jsx = compileBarkx(source, cleanID);
 
       return transformWithEsbuild(jsx, cleanID, {
         loader: "jsx",

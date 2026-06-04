@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { transformBarkx } from "./transform.js";
+import { compileBarkx, transformBarkx } from "./transform.js";
 
 test("transforms Barkx snippets into JSX with Bark sugar", () => {
   const source = `import Button from "./Button";
@@ -79,4 +79,39 @@ test("supports dynamic id sugar with @{expr}", () => {
   const output = transformBarkx(source, "DynamicID.barkx");
 
   assert.match(output, /<section id=\{sectionId\}>/);
+});
+
+test("merges static and dynamic bark classes automatically", () => {
+  const source = `export default function Button({ classes }) {
+  return #[button :counter-button :bark-button :{classes} Click];
+}
+`;
+
+  const output = transformBarkx(source, "MergedClasses.barkx");
+
+  assert.match(output, /className=\{\["counter-button bark-button", classes\]\.filter\(Boolean\)\.join\(" "\)\}/);
+});
+
+test("compiles template-only barkx files into default React components", () => {
+  const source = `[button :button-shell onClick={props.onReset} type=button
+  [span :button-label Reset in Bark]
+  [span :button-detail Count: {props.count}]
+]`;
+
+  const output = compileBarkx(source, "/tmp/BarkButton.barkx");
+
+  assert.match(output, /export default function BarkButton\(props\)/);
+  assert.match(output, /<button className=\{"button-shell"\} onClick=\{props\.onReset\} type=\{"button"\}>/);
+  assert.match(output, /<span className=\{"button-detail"\}>\{"Count: "\}\{props\.count\}<\/span>/);
+});
+
+test("template-only barkx mode also accepts leading #[", () => {
+  const source = `#[main @page
+  [p Hello]
+]`;
+
+  const output = compileBarkx(source, "/tmp/Page.barkx");
+
+  assert.match(output, /export default function Page\(props\)/);
+  assert.match(output, /<main id=\{"page"\}><p>\{"Hello"\}<\/p><\/main>/);
 });

@@ -1,3 +1,5 @@
+import { basename, extname } from "node:path";
+
 export class BarkxSyntaxError extends SyntaxError {
   constructor(message, id, pos) {
     super(`${id}: ${message} at offset ${pos}`);
@@ -33,6 +35,13 @@ export function transformBarkx(source, id = "<anonymous>") {
   }
 
   return output + source.slice(last);
+}
+
+export function compileBarkx(source, id = "<anonymous>") {
+  if (isTemplateOnlyBarkx(source, id)) {
+    return compileTemplateOnlyBarkx(source, id);
+  }
+  return transformBarkx(source, id);
 }
 
 class BarkxParser {
@@ -354,6 +363,20 @@ class BarkxParser {
   }
 }
 
+function compileTemplateOnlyBarkx(source, id) {
+  const start = skipLeadingTrivia(source, 0, id);
+  const parserStart = source[start] === "#" ? start + 1 : start;
+  const parser = new BarkxParser(source, parserStart, id);
+  const node = parser.parseNode();
+  const end = skipLeadingTrivia(source, parser.pos, id);
+
+  if (end !== source.length) {
+    throw new BarkxSyntaxError("template-only barkx files must contain a single root node", id, end);
+  }
+
+  return `export default function ${deriveComponentName(id)}(props) {\n  return (${renderNode(node)});\n}\n`;
+}
+
 function renderNode(node) {
   const props = [];
 
@@ -379,6 +402,11 @@ function renderNode(node) {
   }
 
   return `<${node.tag}${propSuffix}>${children.join("")}</${node.tag}>`;
+}
+
+function isTemplateOnlyBarkx(source, id) {
+  const start = skipLeadingTrivia(source, 0, id);
+  return source.startsWith("#[", start) || source[start] === "[";
 }
 
 function renderChildren(children) {
@@ -499,6 +527,32 @@ function skipJavaScriptConstruct(source, pos, id) {
   return pos;
 }
 
+function skipLeadingTrivia(source, pos, id) {
+  let cursor = pos;
+
+  while (cursor < source.length) {
+    const ch = source[cursor];
+    const next = source[cursor + 1];
+
+    if (isSpace(ch)) {
+      cursor++;
+      continue;
+    }
+    if (ch === "/" && next === "/") {
+      cursor = skipLineComment(source, cursor);
+      continue;
+    }
+    if (ch === "/" && next === "*") {
+      cursor = skipBlockComment(source, cursor, id);
+      continue;
+    }
+
+    break;
+  }
+
+  return cursor;
+}
+
 function skipQuotedString(source, pos, quote, id) {
   let cursor = pos + 1;
 
@@ -554,6 +608,15 @@ function skipBlockComment(source, pos, id) {
     throw new BarkxSyntaxError("unterminated block comment", id, pos);
   }
   return end + 2;
+}
+
+function deriveComponentName(id) {
+  const name = basename(id, extname(id));
+  const cleaned = name.replace(/[^A-Za-z0-9_$]/g, "_");
+  if (cleaned === "") {
+    return "BarkTemplate";
+  }
+  return /^[A-Za-z_$]/.test(cleaned) ? cleaned : `Bark_${cleaned}`;
 }
 
 function isSpace(ch) {

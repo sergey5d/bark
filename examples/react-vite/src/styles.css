@@ -112,6 +112,15 @@ body {
   color: #184e77;
 }
 
+.module-button {
+  color: #6a040f;
+}
+
+.accent {
+  background: linear-gradient(180deg, rgba(255, 239, 213, 0.98), rgba(255, 223, 186, 0.84));
+  border-color: rgba(180, 95, 44, 0.25);
+}
+
 .button-label {
   font-size: 1rem;
 }
@@ -120,6 +129,10 @@ body {
   font-size: 0.86rem;
   font-weight: 500;
   color: rgba(24, 78, 119, 0.76);
+}
+
+.module-button .button-detail {
+  color: rgba(106, 4, 15, 0.76);
 }
 
 .status-card {

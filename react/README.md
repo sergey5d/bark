@@ -2,7 +2,9 @@
 
 `barkx` is an experimental React mode for Bark.
 
-It keeps normal JavaScript module semantics and uses `#[ ... ]` to enter Bark markup:
+It supports two authoring modes.
+
+Module mode keeps normal JavaScript module semantics and uses `#[ ... ]` to enter Bark markup:
 
 ```jsx
 import MyButton from "./MyButton";
@@ -16,6 +18,20 @@ export default function Page({ onSave, title }) {
     ]
   ];
 }
+```
+
+Template-only mode lets the file itself be the component:
+
+```bark
+[button
+  :counter-button
+  :bark-button
+  :{props.className}
+  onClick={props.onReset}
+  type=button
+  [span :button-label Reset in Bark]
+  [span :button-detail Current count: {props.count}]
+]
 ```
 
 The Vite plugin rewrites `.barkx` files into JSX and immediately lowers that JSX to normal JavaScript before Vite import analysis runs.
@@ -37,6 +53,7 @@ export default defineConfig({
 
 ## Current behavior
 
+- A `.barkx` file can be either a normal JS/TS module with `#[ ... ]` snippets, or a template-only component with a top-level Bark root.
 - `#[ ... ]` enters Bark mode from JS/TS.
 - Nested Bark tags continue to use `[tag ...]`.
 - Bare `[` defaults to `div`.
@@ -50,4 +67,5 @@ export default defineConfig({
 ## Current limits
 
 - The transformer currently skips strings, template literals, and comments when looking for `#[ ... ]`, but it does not try to fully parse JavaScript regex literals.
-- `.barkx` is intentionally focused on React-style modules, not the existing HTML-only Bark CLI.
+- Template-only mode currently expects a single top-level Bark root.
+- `.barkx` remains separate from the existing HTML-only Bark CLI.

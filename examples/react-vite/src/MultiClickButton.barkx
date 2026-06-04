@@ -1,0 +1,13 @@
+import ReactCounterButton from "./CounterButton.jsx";
+
+export default function MultiClickButton({ className = "", count, onIncrementBy }) {
+  const classes = ["module-button", className].filter(Boolean).join(" ");
+
+  return #[ReactCounterButton
+    :{classes}
+    count={count}
+    onIncrement={() => onIncrementBy(5)}
+    label="Module Barkx stepper"
+    detail="Adds five clicks to the shared total"
+  ];
+}

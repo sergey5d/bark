@@ -1,8 +1,9 @@
-export default function BarkButton({ className = "", count, onReset }) {
-  const classes = ["counter-button", "bark-button", className].filter(Boolean).join(" ");
-
-  return #[button :{classes} onClick={onReset} type=button
-    [span :button-label Reset in Bark]
-    [span :button-detail Current count: {count}]
-  ];
-}
+[button
+  :counter-button
+  :bark-button
+  :{props.className}
+  onClick={props.onReset}
+  type=button
+  [span :button-label Reset in Bark]
+  [span :button-detail Current count: {props.count}]
+]
