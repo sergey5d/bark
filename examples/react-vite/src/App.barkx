@@ -19,7 +19,7 @@ export default function App() {
       [CounterButton :primary count={count} onIncrement={() => setCount((value) => value + 1)}]
       [MultiClickButton :accent count={count} onIncrementBy={(step) => setCount((value) => value + step)}]
       [BarkButton :secondary count={count} onReset={() => setCount(0)}]
-      [ :status-card
+      [:status-card
         [p :meta | Total clicks]
         [p :count | {count}]
       ]

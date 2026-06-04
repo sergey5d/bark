@@ -4,6 +4,6 @@
   :{props.className}
   onClick={props.onReset}
   type=button
-  [span :button-label Reset in Bark]
+  [span :button-label Template Barkx Reset]
   [span :button-detail Current count: {props.count}]
 ]
