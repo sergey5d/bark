@@ -116,17 +116,9 @@ func (n *barkNode) renderHTML(indent int, ownLine bool) string {
 	indentStr := strings.Repeat("  ", indent)
 	isRawText := barkIsRawTextTag(n.Tag)
 	hasElementChildren := false
-	hasMeaningfulText := false
 	for _, item := range n.Content {
 		if item.Node != nil {
 			hasElementChildren = true
-			continue
-		}
-		if item.Text == "" {
-			continue
-		}
-		if isRawText || strings.TrimSpace(item.Text) != "" {
-			hasMeaningfulText = true
 		}
 	}
 	blockLayout := hasElementChildren
@@ -196,34 +188,30 @@ func (n *barkNode) renderHTML(indent int, ownLine bool) string {
 		return b.String()
 	}
 
-	if hasMeaningfulText {
-		for _, item := range n.Content {
-			if item.Node != nil {
-				continue
-			}
-			text := item.Text
-			if !isRawText {
-				text = strings.TrimSpace(text)
-				if text == "" {
-					continue
-				}
-			}
-			b.WriteByte('\n')
-			b.WriteString(strings.Repeat("  ", indent+1))
-			if isRawText {
-				b.WriteString(text)
-			} else {
-				b.WriteString(barkEscapeHTML(text))
-			}
-		}
-	}
-
 	for _, item := range n.Content {
-		if item.Node == nil {
+		if item.Node != nil {
+			b.WriteByte('\n')
+			b.WriteString(item.Node.renderHTML(indent+1, true))
 			continue
 		}
+
+		text := item.Text
+		if !isRawText {
+			text = strings.TrimSpace(text)
+			if text == "" {
+				continue
+			}
+		} else if text == "" {
+			continue
+		}
+
 		b.WriteByte('\n')
-		b.WriteString(item.Node.renderHTML(indent+1, true))
+		b.WriteString(strings.Repeat("  ", indent+1))
+		if isRawText {
+			b.WriteString(text)
+		} else {
+			b.WriteString(barkEscapeHTML(text))
+		}
 	}
 
 	b.WriteByte('\n')
